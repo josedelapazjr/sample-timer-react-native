@@ -5,48 +5,67 @@
  */
 
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import TimerMixin from 'react-timer-mixin';
+import { View, Text, StyleSheet, AppRegistry, TouchableHighlight } from 'react-native';
 
-export default class SampleTimer extends Component {
+
+class SampleTimer extends Component{
+
+  constructor(props){
+    super(props);
+    this.state = {
+      timeLineTop: 75
+    };
+
+    this._startTimer = this._startTimer.bind(this);
+    this._stopTimer = this._stopTimer.bind(this);
+  }
+
+  componentDidMount() {
+  }
+
+  _startTimer() {
+    //alert('Timer start...');
+    TimerMixin.setInterval( () => {
+      this.setState({
+        timeLineTop: this.state.timeLineTop+1
+      })
+    }, 500);
+  }
+
+  _stopTimer() {
+    //alert('Timer stop...');
+    TimerMixin.clearInterval();
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native Joe!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+       <View>
+         <Text>TOP - {this.state.timeLineTop}
+         </Text>
+        </View>
+        <TouchableHighlight onPress={this._startTimer}>
+          <Text>
+            Start
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this._stopTimer}>
+          <Text>
+            Stop
+          </Text>
+        </TouchableHighlight>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
+export default SampleTimer;
+
+var styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    marginTop:60,
   },
 });
 
