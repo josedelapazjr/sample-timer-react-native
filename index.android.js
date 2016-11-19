@@ -7,7 +7,8 @@ class SampleTimer extends Component{
   constructor(props){
     super(props);
     this.state = {
-      currentTimer: 0
+      currentMinute: 0,
+      currentSecond: 0,
     };
 
     this._startTimer = this._startTimer.bind(this);
@@ -17,11 +18,22 @@ class SampleTimer extends Component{
   }
 
   _updateTimer() {
-    this.setState({ currentTimer: this.state.currentTimer + 1 });
+    let secondCtr = this.state.currentSecond + 1;
+    let minuteCtr = this.state.currentMinute;
+
+    if(secondCtr == 60) {
+      minuteCtr = minuteCtr + 1;
+      secondCtr = 0;
+    }
+
+    this.setState({
+                    currentMinute: minuteCtr,
+                    currentSecond: secondCtr,
+                  });
   }
 
   _startTimer() {
-    this.timer = TimerMixin.setInterval( () => this._updateTimer(), 500);
+    this.timer = TimerMixin.setInterval( () => this._updateTimer(), 1000);
   }
 
   _stopTimer() {
@@ -30,14 +42,33 @@ class SampleTimer extends Component{
 
   _resetTimer() {
     this._stopTimer();
-    this.setState({currentTimer: 0});
+    this.setState({
+                    currentMinute: 0,
+                    currentSecond: 0,
+                  });
+  }
+
+  formatNumber(value){
+    let result = value.toString();
+    // Add 0 when value is less than 10
+    if(value < 10){
+      result = '0' + result;
+    }
+    return result;
+  }
+
+  renderResult() {
+    return this.formatNumber(this.state.currentMinute) +
+           '.' +
+           this.formatNumber(this.state.currentSecond);
   }
 
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.displayContainer}>
-          <Text style={styles.display}> {this.state.currentTimer}
+          <Text style={styles.display}>
+            {this.renderResult()}
           </Text>
         </View>
         <View style={styles.buttonContainer}>
