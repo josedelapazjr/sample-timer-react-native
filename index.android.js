@@ -9,6 +9,7 @@ class SampleTimer extends Component{
     this.state = {
       currentMinute: 0,
       currentSecond: 0,
+      startedFlag: false,
     };
 
     this._startTimer = this._startTimer.bind(this);
@@ -34,10 +35,12 @@ class SampleTimer extends Component{
 
   _startTimer() {
     this.timer = TimerMixin.setInterval( () => this._updateTimer(), 1000);
+    this.setState({startedFlag: true});
   }
 
   _stopTimer() {
     clearInterval(this.timer);
+    this.setState({startedFlag: false});
   }
 
   _resetTimer() {
@@ -63,6 +66,26 @@ class SampleTimer extends Component{
            this.formatNumber(this.state.currentSecond);
   }
 
+  renderStartButton() {
+    return (
+      <TouchableHighlight style={styles.button} onPress={this._startTimer}>
+        <Text style={styles.text}>
+          Start
+        </Text>
+      </TouchableHighlight>
+    );
+  }
+
+  renderPauseButton() {
+    return(
+      <TouchableHighlight style={styles.button} onPress={this._stopTimer}>
+        <Text style={styles.text}>
+          Pause
+        </Text>
+      </TouchableHighlight>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -72,16 +95,7 @@ class SampleTimer extends Component{
           </Text>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableHighlight style={styles.button} onPress={this._startTimer}>
-            <Text style={styles.text}>
-              Start
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.button} onPress={this._stopTimer}>
-            <Text style={styles.text}>
-              Stop
-            </Text>
-          </TouchableHighlight>
+          {this.state.startedFlag? this.renderPauseButton() : this.renderStartButton()}
           <TouchableHighlight style={styles.button} onPress={this._resetTimer}>
             <Text style={styles.text}>
               Reset
